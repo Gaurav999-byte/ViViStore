@@ -187,8 +187,8 @@ const Order = () => {
           <span>₹ {order.taxPrice}</span>
         </div>
         <div className="flex justify-between mb-2">
-          <span>Total</span>
-          <span>₹ {order.totalPrice}</span>
+          <span>Total (USD) </span>
+          <span>$ {order.totalPrice}</span>
         </div>
 
         {!order.isPaid && (
