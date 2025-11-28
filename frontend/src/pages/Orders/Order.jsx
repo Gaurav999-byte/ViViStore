@@ -12,6 +12,8 @@ import {
   usePayOrderMutation,
 } from "../../redux/api/orderApiSlice";
 
+const API = import.meta.env.VITE_API_URL;
+
 const Order = () => {
   const { id: orderId } = useParams();
 
@@ -36,7 +38,7 @@ const Order = () => {
   } = useGetPaypalClientIdQuery();
 
   useEffect(() => {
-    if (!errorPayPal && !loadingPaPal && paypal.clientId) {
+    if (!errorPayPal && !loadingPaPal && paypal?.clientId) {
       const loadingPaPalScript = async () => {
         paypalDispatch({
           type: "resetOptions",
@@ -111,27 +113,34 @@ const Order = () => {
                 </thead>
 
                 <tbody>
-                  {order.orderItems.map((item, index) => (
-                    <tr key={index}>
-                      <td className="p-2">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-16 h-16 object-cover"
-                        />
-                      </td>
+                  {order.orderItems.map((item, index) => {
+                    const imagePath = item.image
+                      ? item.image.replace(/\\/g, "/")
+                      : "";
+                    return (
+                      <tr key={index}>
+                        <td className="p-2">
+                          <img
+                            src={`${API}${imagePath}`}
+                            alt={item.name}
+                            className="w-16 h-16 object-cover"
+                          />
+                        </td>
 
-                      <td className="p-2">
-                        <Link to={`/product/${item.product}`}>{item.name}</Link>
-                      </td>
+                        <td className="p-2">
+                          <Link to={`/product/${item.product}`}>
+                            {item.name}
+                          </Link>
+                        </td>
 
-                      <td className="p-2 text-center">{item.qty}</td>
-                      <td className="p-2 text-center">₹ {item.price}</td>
-                      <td className="p-2 text-center">
-                        ₹ {(item.qty * item.price).toFixed(2)}
-                      </td>
-                    </tr>
-                  ))}
+                        <td className="p-2 text-center">{item.qty}</td>
+                        <td className="p-2 text-center">₹ {item.price}</td>
+                        <td className="p-2 text-center">
+                          ₹ {(item.qty * item.price).toFixed(2)}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -152,13 +161,15 @@ const Order = () => {
           </p>
 
           <p className="mb-4">
-            <strong className="text-pink-500">Email:</strong> {order.user.email}
+            <strong className="text-pink-500">Email:</strong>{" "}
+            {order.user.email}
           </p>
 
           <p className="mb-4">
             <strong className="text-pink-500">Address:</strong>{" "}
             {order.shippingAddress.address}, {order.shippingAddress.city}{" "}
-            {order.shippingAddress.postalCode}, {order.shippingAddress.country}
+            {order.shippingAddress.postalCode},{" "}
+            {order.shippingAddress.country}
           </p>
 
           <p className="mb-4">

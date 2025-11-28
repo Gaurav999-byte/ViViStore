@@ -8,6 +8,8 @@ import Loader from "../../components/Loader";
 import { useCreateOrderMutation } from "../../redux/api/orderApiSlice";
 import { clearCartItems } from "../../redux/features/cart/cartSlice";
 
+const API = import.meta.env.VITE_API_URL;
+
 const PlaceOrder = () => {
   const navigate = useNavigate();
 
@@ -62,26 +64,31 @@ const PlaceOrder = () => {
               </thead>
 
               <tbody>
-                {cart.cartItems.map((item, index) => (
-                  <tr key={index}>
-                    <td className="p-2">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-16 h-16 object-cover"
-                      />
-                    </td>
+                {cart.cartItems.map((item, index) => {
+                  const imagePath = item.image
+                    ? item.image.replace(/\\/g, "/")
+                    : "";
+                  return (
+                    <tr key={index}>
+                      <td className="p-2">
+                        <img
+                          src={`${API}${imagePath}`}
+                          alt={item.name}
+                          className="w-16 h-16 object-cover"
+                        />
+                      </td>
 
-                    <td className="p-2">
-                      <Link to={`/product/${item.product}`}>{item.name}</Link>
-                    </td>
-                    <td className="p-2">{item.qty}</td>
-                    <td className="p-2"> ₹ {item.price.toFixed(2)}</td>
-                    <td className="p-2">
-                      ₹ {(item.qty * item.price).toFixed(2)}
-                    </td>
-                  </tr>
-                ))}
+                      <td className="p-2">
+                        <Link to={`/product/${item.product}`}>{item.name}</Link>
+                      </td>
+                      <td className="p-2">{item.qty}</td>
+                      <td className="p-2"> ₹ {item.price.toFixed(2)}</td>
+                      <td className="p-2">
+                        ₹ {(item.qty * item.price).toFixed(2)}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -109,7 +116,9 @@ const PlaceOrder = () => {
               </li>
             </ul>
 
-            {error && <Message variant="danger">{error.data.message}</Message>}
+            {error && (
+              <Message variant="danger">{error.data.message}</Message>
+            )}
 
             <div>
               <h2 className="text-2xl font-semibold mb-4">Shipping</h2>

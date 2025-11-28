@@ -10,11 +10,12 @@ import {
 import { useFetchCategoriesQuery } from "../../redux/api/categoryApiSlice";
 import { toast } from "react-toastify";
 
+const API = import.meta.env.VITE_API_URL;
+
 const AdminProductUpdate = () => {
   const params = useParams();
 
   const { data: productData } = useGetProductByIdQuery(params._id);
-
 
   const [image, setImage] = useState(productData?.image || "");
   const [name, setName] = useState(productData?.name || "");
@@ -27,18 +28,14 @@ const AdminProductUpdate = () => {
   const [brand, setBrand] = useState(productData?.brand || "");
   const [stock, setStock] = useState(productData?.countInStock);
 
-  // hook
   const navigate = useNavigate();
 
-  // Fetch categories using RTK Query
   const { data: categories = [] } = useFetchCategoriesQuery();
 
   const [uploadProductImage] = useUploadProductImageMutation();
 
-  // Define the update product mutation
   const [updateProduct] = useUpdateProductMutation();
 
-  // Define the delete product mutation
   const [deleteProduct] = useDeleteProductMutation();
 
   useEffect(() => {
@@ -50,6 +47,7 @@ const AdminProductUpdate = () => {
       setQuantity(productData.quantity);
       setBrand(productData.brand);
       setImage(productData.image);
+      setStock(productData.countInStock);
     }
   }, [productData]);
 
@@ -81,7 +79,6 @@ const AdminProductUpdate = () => {
       formData.append("brand", brand);
       formData.append("countInStock", stock);
 
-      // Update product using the RTK Query mutation
       const data = await updateProduct({ productId: params._id, formData });
 
       if (data?.error) {
@@ -122,6 +119,8 @@ const AdminProductUpdate = () => {
     }
   };
 
+  const imagePath = image ? image.replace(/\\/g, "/") : "";
+
   return (
     <>
       <div className="container  xl:mx-[9rem] sm:mx-[0]">
@@ -133,7 +132,7 @@ const AdminProductUpdate = () => {
             {image && (
               <div className="text-center">
                 <img
-                  src={image}
+                  src={`${API}${imagePath}`}
                   alt="product"
                   className="block mx-auto w-full h-[40%]"
                 />
@@ -142,7 +141,7 @@ const AdminProductUpdate = () => {
 
             <div className="mb-3">
               <label className="text-white px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11">
-                {image ? image.name : "Upload image"}
+                {image && image.name ? image.name : "Upload image"}
                 <input
                   type="file"
                   name="image"

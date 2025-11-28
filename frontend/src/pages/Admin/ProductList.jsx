@@ -8,6 +8,8 @@ import { useFetchCategoriesQuery } from "../../redux/api/categoryApiSlice";
 import { toast } from "react-toastify";
 import AdminMenu from "./AdminMenu";
 
+const API = import.meta.env.VITE_API_URL;
+
 const ProductList = () => {
   const [image, setImage] = useState("");
   const [name, setName] = useState("");
@@ -66,6 +68,8 @@ const ProductList = () => {
     }
   };
 
+  const previewPath = imageUrl ? imageUrl.replace(/\\/g, "/") : "";
+
   return (
     <div className="container xl:mx-[9rem] sm:mx-[0]">
       <div className="flex flex-col md:flex-row">
@@ -76,7 +80,7 @@ const ProductList = () => {
           {imageUrl && (
             <div className="text-center">
               <img
-                src={imageUrl}
+                src={`${API}${previewPath}`}
                 alt="product"
                 className="block mx-auto max-h-[200px]"
               />
@@ -85,7 +89,7 @@ const ProductList = () => {
 
           <div className="mb-3">
             <label className="border text-white px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11">
-              {image ? image.name : "Upload Image"}
+              {image ? image.name || "Image selected" : "Upload Image"}
 
               <input
                 type="file"
