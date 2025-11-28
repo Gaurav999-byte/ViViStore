@@ -21,6 +21,8 @@ import Ratings from "./Ratings";
 import ProductTabs from "./ProductTabs";
 import { addToCart } from "../../redux/features/cart/cartSlice";
 
+const API = import.meta.env.VITE_API_URL;
+
 const ProductDetails = () => {
   const { id: productId } = useParams();
   const navigate = useNavigate();
@@ -84,13 +86,23 @@ const ProductDetails = () => {
         <>
           <div className="flex flex-wrap relative items-between mt-[2rem] ml-[10rem]">
             <div>
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-full xl:w-[50rem] lg:w-[45rem] md:w-[30rem] sm:w-[20rem] mr-[2rem]"
-              />
-
-              <HeartIcon product={product} />
+              {product && (
+                <>
+                  {(() => {
+                    const imagePath = product.image
+                      ? product.image.replace(/\\/g, "/")
+                      : "";
+                    return (
+                      <img
+                        src={`${API}${imagePath}`}
+                        alt={product.name}
+                        className="w-full xl:w-[50rem] lg:w-[45rem] md:w-[30rem] sm:w-[20rem] mr-[2rem]"
+                      />
+                    );
+                  })()}
+                  <HeartIcon product={product} />
+                </>
+              )}
             </div>
 
             <div className="flex flex-col justify-between">

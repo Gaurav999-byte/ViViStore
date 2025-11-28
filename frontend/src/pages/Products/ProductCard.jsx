@@ -5,15 +5,17 @@ import { addToCart } from "../../redux/features/cart/cartSlice";
 import { toast } from "react-toastify";
 import HeartIcon from "./HeartIcon";
 
+const API = import.meta.env.VITE_API_URL;
+
 const ProductCard = ({ p }) => {
   const dispatch = useDispatch();
 
   const addToCartHandler = (product, qty) => {
     dispatch(addToCart({ ...product, qty }));
-    toast.success("Item added successfully", {
-      
-    });
+    toast.success("Item added successfully");
   };
+
+  const imagePath = p.image ? p.image.replace(/\\/g, "/") : "";
 
   return (
     <div className="max-w-sm relative bg-[#1A1A1A] rounded-lg shaodw dark:bg-gray-800 dark:border-gray-700">
@@ -24,7 +26,7 @@ const ProductCard = ({ p }) => {
           </span>
           <img
             className="cursor-pointer w-full"
-            src={p.image}
+            src={`${API}${imagePath}`}
             alt={p.name}
             style={{ height: "170px", objectFit: "cover" }}
           />
@@ -36,7 +38,7 @@ const ProductCard = ({ p }) => {
         <div className="flex justify-between">
           <h5 className="mb-2 text-xl text-whiet dark:text-white">{p?.name}</h5>
 
-          <p className="text-black font-semibold text-pink-500">
+          <p className=" text-black font-semibold text-pink-500">
             {p?.price?.toLocaleString("en-IN", {
               style: "currency",
               currency: "INR",

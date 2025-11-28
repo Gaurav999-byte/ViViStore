@@ -1,12 +1,16 @@
 import { Link } from "react-router-dom";
 import HeartIcon from "./HeartIcon";
 
+const API = import.meta.env.VITE_API_URL;
+
 const Product = ({ product }) => {
+  const imagePath = product.image ? product.image.replace(/\\/g, "/") : "";
+
   return (
     <div className="w-[30rem] ml-[2rem] p-3 relative">
       <div className="relative">
         <img
-          src={product.image}
+          src={`${API}${imagePath}`}
           alt={product.name}
           className="w-[30rem] rounded"
         />
